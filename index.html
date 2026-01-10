@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>咕咕嘎嘎！快去刷题！</title>
+    <!-- 引入外部CSS文件 -->
+	<style>
+        /* 初始隐藏结果页面 */
+        #resultPage {
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+    <!-- 开始页面 -->
+    <div class="container start-page" id="startPage">
+        <h1 class="title">《计算机系统基础》选择题答题系统</h1>
+        <p class="desc">随机抽取题目，完成后即时判分，查看错题解析</p>
+        
+        <!-- 章节选择区域 -->
+        <div class="chapter-selection">
+            <h3>请选择要抽取的章节（至少选择一章）：</h3>
+            <div class="chapter-options">
+                <label><input type="checkbox" name="chapter" value="第一章 计算机系统概述" checked> 第一章 计算机系统概述</label>
+                <label><input type="checkbox" name="chapter" value="第二章 数据的机器级表示与处理" checked> 第二章 数据的机器级表示与处理</label>
+                <label><input type="checkbox" name="chapter" value="第三章 程序的转换及机器级表示" checked> 第三章 程序的转换及机器级表示</label>
+                <label><input type="checkbox" name="chapter" value="第四章 程序的链接" checked> 第四章 程序的链接</label>
+                <label><input type="checkbox" name="chapter" value="第五章 程序的执行" checked> 第五章 程序的执行</label>
+                <label><input type="checkbox" name="chapter" value="第六章 层次结构存储系统" checked> 第六章 层次结构存储系统</label>
+            </div>
+            <div class="selection-controls">
+                <button class="btn small-btn" id="selectAllBtn">全选</button>
+                <button class="btn small-btn" id="deselectAllBtn">全不选</button>
+            </div>
+        </div>
+        
+        <button class="btn" id="startBtn">开始答题</button>
+    </div>
+
+    <!-- 答题页面 -->
+    <div class="container quiz-page" id="quizPage">
+        <div class="question-index" id="questionIndex">第 1/40 题</div>
+        <span class="chapter-tag" id="chapterTag">第一章 计算机系统概述</span>
+        <div class="question" id="questionContent"></div>
+        <div class="options" id="optionsContainer">
+            <!-- 选项动态生成 -->
+        </div>
+        <div class="nav-bar">
+            <button class="btn nav-btn" id="prevBtn">上一题</button>
+            <button class="btn nav-btn mark-btn" id="markBtn">标记</button>
+            <button class="btn nav-btn submit-btn" id="submitBtn">提交答题</button>
+            <button class="btn nav-btn" id="nextBtn">下一题</button>
+        </div>
+    </div>
+
+    <!-- 结果页面 -->
+    <div class="container result-page" id="resultPage">
+        <h1 class="title">答题结果</h1>
+        <div class="result-stats">
+            <div class="score" id="finalScore">0</div>
+            <div class="score-desc" id="scoreDesc">40题中答对0题，得分0分</div>
+        </div>
+        <div class="wrong-list" id="wrongList">
+            <!-- 错题动态生成 -->
+        </div>
+        <div class="result-buttons">
+            <button class="btn back-btn" id="backToSelectBtn">返回选择</button>
+            <button class="btn" id="restartBtn">重新答题</button>
+        </div>
+    </div>
+
+    <!-- 水印层 -->
+    <div id="watermark" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+        background: transparent;
+        opacity: 0.15;
+        font-size: 20px;
+        color: #888;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: rotate(-30deg);
+        font-weight: bold;
+        white-space: nowrap;">
+        AnonTomorin制作，仅用作期末考试使用，禁止商用
+    </div>
+
+    <!-- 引入外部JS文件 -->
+    <!-- 先引入题库数据 -->
+    <script src="questionBank.js"></script>
+    <!-- 再引入主逻辑 -->
+    <script src="quiz.js"></script>
+</body>
+</html>
