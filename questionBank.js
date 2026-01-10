@@ -208,7 +208,7 @@ const questionBank = [
             "D. 序列一的 CPI 比序列二的 CPI 大"
         ],
         answer: "B",
-        image: "img/1.1.png"
+        image: "1.1.png"
     },
     {
         chapter: "第一章 计算机系统概述",
@@ -220,7 +220,7 @@ const questionBank = [
             "D. 序列二的 MIPS 数比序列一多 100，但序列一的执行速度比序列二快 20s"
         ],
         answer: "B",
-        image: "img/1.2.png"
+        image: "1.2.png"
     },
 	// 第二章 数据的机器级表示与处理（58题）
     {
@@ -3419,3 +3419,4 @@ const questionBank = [
         answer: "B"
     }
 ];
+
