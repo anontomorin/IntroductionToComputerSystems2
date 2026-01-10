@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>咕咕嘎嘎！快去刷题！</title>
     <!-- 引入外部CSS文件 -->
-	<style>
+    <style>
         /* 初始隐藏结果页面 */
         #resultPage {
             display: none;
@@ -18,6 +18,16 @@
     <div class="container start-page" id="startPage">
         <h1 class="title">《计算机系统基础》选择题答题系统</h1>
         <p class="desc">随机抽取题目，完成后即时判分，查看错题解析</p>
+        
+        <!-- 单章节刷题开关 -->
+        <div class="single-chapter-switch">
+            <label class="switch-label">
+                <input type="checkbox" id="singleChapterMode">
+                <span class="switch-slider"></span>
+                <span class="switch-text">单章节刷题模式（显示该章节所有题目）</span>
+            </label>
+            <div class="mode-hint" id="modeHint">当前模式：随机抽取题目</div>
+        </div>
         
         <!-- 章节选择区域 -->
         <div class="chapter-selection">
@@ -62,9 +72,35 @@
             <div class="score" id="finalScore">0</div>
             <div class="score-desc" id="scoreDesc">40题中答对0题，得分0分</div>
         </div>
-        <div class="wrong-list" id="wrongList">
-            <!-- 错题动态生成 -->
+        
+        <!-- 新增：答题详情选项卡 -->
+        <div class="result-tabs">
+            <button class="result-tab active" data-tab="wrong">错题列表</button>
+            <button class="result-tab" data-tab="correct">正确题目</button>
+            <button class="result-tab" data-tab="all">全部题目</button>
         </div>
+        
+        <!-- 错题列表 -->
+        <div class="tab-content active" id="wrongTab">
+            <div class="question-list" id="wrongList">
+                <!-- 错题动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 正确题目列表 -->
+        <div class="tab-content" id="correctTab">
+            <div class="question-list" id="correctList">
+                <!-- 正确题目动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 全部题目列表 -->
+        <div class="tab-content" id="allTab">
+            <div class="question-list" id="allList">
+                <!-- 全部题目动态生成 -->
+            </div>
+        </div>
+        
         <div class="result-buttons">
             <button class="btn back-btn" id="backToSelectBtn">返回选择</button>
             <button class="btn" id="restartBtn">重新答题</button>
@@ -90,7 +126,7 @@
         transform: rotate(-30deg);
         font-weight: bold;
         white-space: nowrap;">
-        AnonTomorin制作，仅用作期末考试使用，禁止商用
+        AnonTomorin制作，仅用作期末考试复习使用，禁止商用
     </div>
 
     <!-- 引入外部JS文件 -->
