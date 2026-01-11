@@ -582,7 +582,7 @@ const questionBank = [
             "A. 01001010",
             "B. 01001011",
             "C. 10001010",
-            "D. 1100 101（原题选项 D 格式不完整，按原文保留）"
+            "D. 1100 101"
         ],
         answer: "A"
     },
@@ -810,12 +810,13 @@ const questionBank = [
         chapter: "第二章 数据的机器级表示与处理",
         question: "对于 IEEE754 单精度浮点加减运算，在对阶过程中，需计算两个阶码 Ex 和 Ey 之差的补码 [ΔE] 补。若 ΔE≥128 或 ΔE≤-129，则 [ΔE] 补发生溢出。假定 [Ex] 移、[-[Ey] 移] 补和 [ΔE] 补的最高有效位分别记为 Exs、Eys 和 Ebs，则相应的溢出判断方程为 ()。",
         options: [
-            "A. Overflow = Exs' Ebs + Exs Eys Ebs",
-            "B. Overflow = Exs Eys Ebs + Exs Eys Ebs（原题选项 B 格式重复，按原文保留）",
-            "C. Overflow = Exs Eys Ebs + Exs Eys Ebs（原题选项 C 格式重复，按原文保留）",
-            "D. Overflow = Exs Eys Ebs + Exs Eys Ebs（原题选项 D 格式重复，按原文保留）"
+            "A. ",
+            "B. ",
+            "C. ",
+            "D. "
         ],
-        answer: "D"
+        answer: "D",
+		image:"2.1.png"
     },
     {
         chapter: "第二章 数据的机器级表示与处理",
@@ -2781,6 +2782,7 @@ const questionBank = [
         answer: "B"
     }
 ];
+
 
 
 
