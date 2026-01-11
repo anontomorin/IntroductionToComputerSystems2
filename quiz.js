@@ -7,6 +7,8 @@ let totalQuestions = 0; // 总题目数（根据抽取的题目数量动态变�
 let lastSelectedChapters = []; // 保存上次选择的章节，用于重新答题
 let singleChapterMode = false; // 单章节刷题模式
 let questionResults = []; // 保存每道题的答题结果
+let isAnswerLocked = false; // 是否锁定当前题目的答案选择
+let currentQuestionAnswered = false; // 当前题目是否已回答
 
 // DOM元素
 const startPage = document.getElementById("startPage");
@@ -157,6 +159,139 @@ function getOptionText(question, answerLetter) {
     return targetOption || `未找到选项(${answerLetter})`;
 }
 
+// 检查答案是否正确
+function checkAnswer(selectedOptionLetter) {
+    const question = selectedQuestions[currentIndex];
+    const correctAnswer = question.answer;
+    return selectedOptionLetter === correctAnswer;
+}
+
+// 显示答案反馈
+function showAnswerFeedback(isCorrect, selectedOptionLetter) {
+    const question = selectedQuestions[currentIndex];
+    const options = document.querySelectorAll(".option");
+    
+    // 锁定答案选择，防止重复点击
+    isAnswerLocked = true;
+    currentQuestionAnswered = true;
+    
+    // 显示所有正确答案（有些题目可能有多个正确答案）
+    const correctAnswers = question.answer.split(''); // 支持多个正确答案
+    correctAnswers.forEach(correctAnswer => {
+        options.forEach(option => {
+            if (option.textContent.charAt(0) === correctAnswer) {
+                option.classList.add("correct-answer");
+            }
+        });
+    });
+    
+    // 如果回答错误，标记用户选择的错误答案
+    if (!isCorrect && selectedOptionLetter) {
+        options.forEach(option => {
+            if (option.textContent.charAt(0) === selectedOptionLetter) {
+                option.classList.add("wrong-answer");
+            }
+        });
+    }
+    
+    // 显示反馈消息
+    const feedbackDiv = document.createElement("div");
+    feedbackDiv.id = "answerFeedback";
+    feedbackDiv.className = `answer-feedback ${isCorrect ? 'correct' : 'wrong'}`;
+    
+    if (isCorrect) {
+        feedbackDiv.innerHTML = `
+            <div class="feedback-content">
+                <div class="feedback-icon">✓</div>
+                <div class="feedback-text">回答正确！</div>
+                <div class="auto-jump">1秒后自动跳转下一题...</div>
+            </div>
+        `;
+        
+        // 正确时，1秒后自动跳转下一题
+        setTimeout(() => {
+            if (currentIndex < totalQuestions - 1) {
+                nextQuestion();
+            } else {
+                // 如果是最后一题，显示完成提示
+                feedbackDiv.innerHTML = `
+                    <div class="feedback-content">
+                        <div class="feedback-icon">✓</div>
+                        <div class="feedback-text">回答正确！</div>
+                        <div class="feedback-hint">这是最后一题，请点击"提交答题"查看结果</div>
+                    </div>
+                `;
+            }
+        }, 1000);
+    } else {
+        feedbackDiv.innerHTML = `
+            <div class="feedback-content">
+                <div class="feedback-icon">✗</div>
+                <div class="feedback-text">回答错误</div>
+                <div class="correct-answer-text">正确答案：${question.answer}</div>
+                <button class="btn continue-btn" id="continueBtn">继续答题</button>
+            </div>
+        `;
+        
+        // 错误时，需要用户点击继续按钮
+        setTimeout(() => {
+            document.getElementById("continueBtn").addEventListener("click", () => {
+                nextQuestion();
+            });
+        }, 100);
+    }
+    
+    // 将反馈消息插入到选项后面
+    optionsContainer.parentNode.insertBefore(feedbackDiv, optionsContainer.nextSibling);
+}
+
+// 清除答案反馈
+function clearAnswerFeedback() {
+    const feedbackDiv = document.getElementById("answerFeedback");
+    if (feedbackDiv) {
+        feedbackDiv.remove();
+    }
+    
+    // 清除选项的样式
+    document.querySelectorAll(".option").forEach(option => {
+        option.classList.remove("correct-answer", "wrong-answer");
+    });
+    
+    isAnswerLocked = false;
+    currentQuestionAnswered = false;
+}
+
+// 跳转到下一题
+function nextQuestion() {
+    clearAnswerFeedback();
+    
+    if (currentIndex < totalQuestions - 1) {
+        currentIndex++;
+        renderCurrentQuestion();
+    } else {
+        // 如果是最后一题，显示提示
+        const feedbackDiv = document.getElementById("answerFeedback");
+        if (feedbackDiv) {
+            feedbackDiv.innerHTML = `
+                <div class="feedback-content">
+                    <div class="feedback-text">已经是最后一题了！</div>
+                    <button class="btn submit-btn" onclick="submitQuiz()">提交答题</button>
+                </div>
+            `;
+        }
+    }
+}
+
+// 跳转到上一题
+function previousQuestion() {
+    clearAnswerFeedback();
+    
+    if (currentIndex > 0) {
+        currentIndex--;
+        renderCurrentQuestion();
+    }
+}
+
 // 渲染当前题目
 function renderCurrentQuestion() {
     if (selectedQuestions.length === 0) return;
@@ -217,34 +352,25 @@ function renderCurrentQuestion() {
         
         // 选项点击事件
         optionDiv.addEventListener("click", () => {
+            // 如果已经锁定答案，不允许再次选择
+            if (isAnswerLocked) return;
+            
             document.querySelectorAll(".option").forEach(opt => opt.classList.remove("selected"));
             optionDiv.classList.add("selected");
-            userAnswers[currentIndex] = option.charAt(0);
+            
+            const selectedAnswer = option.charAt(0);
+            userAnswers[currentIndex] = selectedAnswer;
+            
+            // 立即检查答案
+            const isCorrect = checkAnswer(selectedAnswer);
+            showAnswerFeedback(isCorrect, selectedAnswer);
         });
         
         optionsContainer.appendChild(optionDiv);
     });
-}
-
-// 切换题目
-function changeQuestion(direction) {
-    const newIndex = currentIndex + direction;
-    if (newIndex >= 0 && newIndex < totalQuestions) {
-        currentIndex = newIndex;
-        renderCurrentQuestion();
-    }
-}
-
-// 标记题目
-function toggleMark() {
-    const currentOptions = document.querySelectorAll(".option");
-    if (markedQuestions.has(currentIndex)) {
-        markedQuestions.delete(currentIndex);
-        currentOptions.forEach(opt => opt.classList.remove("marked"));
-    } else {
-        markedQuestions.add(currentIndex);
-        currentOptions.forEach(opt => opt.classList.add("marked"));
-    }
+    
+    // 清除之前的反馈
+    clearAnswerFeedback();
 }
 
 // 创建题目概要元素
@@ -389,12 +515,17 @@ function restartQuiz() {
     markedQuestions = new Set();
     currentIndex = 0;
     questionResults = [];
+    isAnswerLocked = false;
+    currentQuestionAnswered = false;
     
     // 清除图片元素
     const existingImage = document.getElementById("questionImage");
     if (existingImage) {
         existingImage.remove();
     }
+    
+    // 清除反馈
+    clearAnswerFeedback();
     
     // 使用相同的章节重新抽题
     if (lastSelectedChapters.length > 0) {
@@ -432,12 +563,17 @@ function backToSelect() {
     currentIndex = 0;
     totalQuestions = 0;
     questionResults = [];
+    isAnswerLocked = false;
+    currentQuestionAnswered = false;
     
     // 清除图片元素
     const existingImage = document.getElementById("questionImage");
     if (existingImage) {
         existingImage.remove();
     }
+    
+    // 清除反馈
+    clearAnswerFeedback();
     
     // 切换到开始页面
     resultPage.style.display = "none";
@@ -508,6 +644,8 @@ function bindEvents() {
         markedQuestions = new Set();
         currentIndex = 0;
         questionResults = [];
+        isAnswerLocked = false;
+        currentQuestionAnswered = false;
         
         renderCurrentQuestion();
         startPage.style.display = "none";
@@ -521,10 +659,10 @@ function bindEvents() {
     deselectAllBtn.addEventListener("click", deselectAllChapters);
 
     // 上一题
-    prevBtn.addEventListener("click", () => changeQuestion(-1));
+    prevBtn.addEventListener("click", previousQuestion);
 
-    // 下一题
-    nextBtn.addEventListener("click", () => changeQuestion(1));
+    // 下一题（现在主要用于错误答案确认后的跳转）
+    nextBtn.addEventListener("click", nextQuestion);
 
     // 标记题目
     markBtn.addEventListener("click", toggleMark);
@@ -548,6 +686,23 @@ function bindEvents() {
             switchResultTab(this.dataset.tab);
         });
     });
+}
+
+// 标记题目函数
+function toggleMark() {
+    if (currentQuestionAnswered) {
+        alert("请先完成当前题目的答题反馈！");
+        return;
+    }
+    
+    const currentOptions = document.querySelectorAll(".option");
+    if (markedQuestions.has(currentIndex)) {
+        markedQuestions.delete(currentIndex);
+        currentOptions.forEach(opt => opt.classList.remove("marked"));
+    } else {
+        markedQuestions.add(currentIndex);
+        currentOptions.forEach(opt => opt.classList.add("marked"));
+    }
 }
 
 // 初始化系统
