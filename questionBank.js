@@ -1352,7 +1352,7 @@ const questionBank = [
         chapter: "第三章 程序的转换及机器级表示",
         question: "假定全局 short 型数组 a 的起始地址为 0x804908c，则 a [2] 的地址是 ()。",
         options: [
-            "A. 0x040（原题选项 A 格式不完整）",
+            "A. 0x804908e",
             "B. 0x8049090",
             "C. 0x8049092",
             "D. 0x8049094"
@@ -2782,6 +2782,7 @@ const questionBank = [
         answer: "B"
     }
 ];
+
 
 
 
