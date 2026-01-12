@@ -1148,7 +1148,7 @@ const questionBank = [
             "C. cmpl % eax, % edx; ja 8048380",
             "D. cmpl % eax, % edx; jg 8048480"
         ],
-        answer: "A"
+        answer: "C"
     },
     {
         chapter: "第三章 程序的转换及机器级表示",
@@ -2782,6 +2782,7 @@ const questionBank = [
         answer: "B"
     }
 ];
+
 
 
 
