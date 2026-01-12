@@ -2365,7 +2365,7 @@ const questionBank = [
     },
     {
         chapter: "第六章 层次结构存储系统",
-        question: "以下选项中，属于可擦除可编程只读存储器的是 ()。",
+        question: "EPROM是指 ()。",
         options: [
             "A. 读写存储器",
             "B. 掩膜只读存储器",
@@ -2782,6 +2782,7 @@ const questionBank = [
         answer: "B"
     }
 ];
+
 
 
 
